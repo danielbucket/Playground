@@ -10,7 +10,6 @@ const AuthProvider = ({ children }) => {
     setToken_(newToken);
   };
 
-
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;

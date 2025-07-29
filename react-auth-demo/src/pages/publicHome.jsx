@@ -6,6 +6,8 @@ export default function PublicHome() {
     <div style={styles.container}>
       <h1>Public Home Page</h1>
       <Link style={styles.link} to='/login'>Login</Link>
+      <Link style={styles.link} to='/service'>Service</Link>
+      <Link style={styles.link} to='/about'>About</Link>
     </div>
   );
 };

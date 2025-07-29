@@ -4,57 +4,63 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Login() {
-  const [authContent, setAuthContent] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
   const { setToken } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (location.state) {
-      setAuthContent(location.state);
+      const { username, password } = location.state;
+
+      setUsername(username);
+      setPassword(password);
     }
   }, [location.state]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    fetch('http://localhost:3000/login', {
+    if (!username || !password) {
+      console.error('Username and password are required');
+      return;
+    };
+
+    fetch('http://localhost:3000/react-auth-demo/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        userName: authContent?.userName || 'admin',
-        password: authContent?.password || 'password',
-      }),
+      body: JSON.stringify({ username, password }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.token) {
-          setToken(data.token);
-          localStorage.setItem('test-token', data.token);
-          navigate('/home', { replace: true });
-        } else {
-          console.error('Login failed:', data.message);
-        }
-      })
-      .catch((error) => {
-        console.error('Error during login:', error);
-      });
-    
-    setToken('test-token-12345');
-    navigate('/home', { replace: true });
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.token) {
+        setToken(data.token);
+        localStorage.setItem('test-token', data.token);
+        navigate('/home', { replace: true });
+      }
+    })
+    .catch((error) => {
+      console.error('Error during login: ', error);
+      // Optionally, you can reset the form fields
+      // setUsername('');
+      // setPassword('');
+    });
   };
 
   return (
     <div style={styles.container}>
       <h1>Login Page</h1>
       <form>
-        <input type="text" placeholder="Username" value={authContent?.userName || ''} />
-        <input type="password" placeholder="Password" value={authContent?.password || ''} />
+        <label>Username:</label>
+          <input type="text" placeholder="Username" value={username ? username : ''} onChange={(e) => setUsername(e.target.value)} />
+        <label>Password:</label>
+          <input type="password" placeholder="Password" value={password ? password : ''} onChange={(e) => setPassword(e.target.value)} />
         <input type="submit" value="Login" onClick={(e) => handleSubmit(e)} />
       </form>
-      <p>Click the button to simulate a successful login.</p>
+      <Link style={styles.link} to='/'>Back to Home</Link>
       <div style={styles.noAccount}>
         <h2>Don't have an account?</h2>
         <Link style={styles.link} to="/new-user">Register here</Link>

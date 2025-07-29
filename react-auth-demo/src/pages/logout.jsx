@@ -3,7 +3,7 @@ import { useAuth } from '../provider/authProvider';
 
 export default function Logout() {
   const { setToken } = useAuth();
-  const { navigate } = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await setToken();
