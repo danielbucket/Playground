@@ -4,7 +4,6 @@ export default function NewUser() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    // Simulate account creation logic
     navigate('/login');
   };
   
