@@ -12,7 +12,7 @@ export default function NewUser() {
     navigate('/login', {
       replace: true,
       state: {
-        userName: event.target[0].value,
+        username: event.target[0].value,
         password: event.target[1].value
       }
     });
