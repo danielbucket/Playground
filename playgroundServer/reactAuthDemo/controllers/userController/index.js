@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-exports.loginUser = async (req, res) => {
+exports.login_user = async (req, res) => {
     const { username, password } = req.body;
 
     if (username === 'admin' && password === 'password') {
@@ -11,6 +11,14 @@ exports.loginUser = async (req, res) => {
     }
 };
 
-exports.logoutUser = async (req, res) => {
+exports.logout_user = async (req, res) => {
     res.send('Logout successful!');
+};
+
+exports.new_user = async (req, res) => {
+    const { username, password } = req.body;
+
+    // Here you would typically save the new user to your database
+    // For this example, we will just return a success message
+    res.status(201).json({ message: 'New user created successfully', user: { username } });
 };

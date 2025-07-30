@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router';
 import { useState } from 'react';
+import AuthService from '../services/auth.service.js';
 
 export default function NewUser() {
   const [password, setPassword] = useState('password');
@@ -15,13 +16,13 @@ export default function NewUser() {
       return;
     }
 
-    postNewUser(password, username)
-    .then((result) => {
-      if (result) {
-        console.log('New user created successfully');
-        navigate('/login', { replace: true, state: { username, password } });
-      } else {
-        console.error('Failed to create new user');
+    AuthService.new_user(username, password)
+      .then((result) => {
+        if (result) {
+          console.log('New user created successfully');
+          navigate('/auth/login', { replace: true, state: { username } });
+        } else {
+          console.error('Failed to create new user');
       }
     })
     .catch((error) => {
@@ -39,7 +40,7 @@ export default function NewUser() {
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <button type="submit">Create Account</button>
       </form>
-      <Link style={styles.link} to='/login'>Already have an account?</Link>
+      <Link style={styles.link} to='/auth/login'>Already have an account?</Link>
     </div>
   );
 };

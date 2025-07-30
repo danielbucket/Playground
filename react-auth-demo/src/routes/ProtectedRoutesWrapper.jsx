@@ -5,7 +5,7 @@ export default function ProtectedRoutesWrapper() {
   const { token } = useAuth();
 
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth/login" replace />;
   };
 
   return <Outlet />;

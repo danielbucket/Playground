@@ -2,6 +2,6 @@ import Login from '../pages/login.jsx';
 import NewUser from '../pages/newUser.jsx';
 
 export const nonProtectedRoutes = [
-  { path: '/login', element: <Login /> },
-  { path: '/new-user', element: <NewUser /> }
+  { path: '/auth/login', element: <Login /> },
+  { path: '/auth/new-user', element: <NewUser /> }
 ];

@@ -8,7 +8,7 @@ export default function Logout() {
   const handleLogout = async () => {
     await setToken();
     await localStorage.removeItem('test-token');
-    navigate('/', { replace: true });
+    navigate('/auth/login', { replace: true });
   };
 
   return (

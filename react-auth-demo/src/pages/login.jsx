@@ -1,7 +1,8 @@
-import { useAuth } from '../provider/authProvider.jsx';
 import { useNavigate, useLocation } from 'react-router';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../provider/authProvider.jsx';
+import AuthService from '../services/auth.service.js';
 
 export default function Login() {
   const [username, setUsername] = useState(null);
@@ -12,6 +13,7 @@ export default function Login() {
 
   useEffect(() => {
     if (location.state) {
+      console.log('Location state:', location.state);
       const { username, password } = location.state;
 
       setUsername(username);
@@ -27,30 +29,21 @@ export default function Login() {
       return;
     };
 
-    fetch('http://localhost:3000/react-auth-demo/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.token) {
-        setToken(data.token);
-        localStorage.setItem('test-token', data.token);
+    AuthService.login(username, password)
+      .then((token) => {
+        setToken(token);
+        localStorage.setItem('test-token', token);
         navigate('/home', {
           replace: true,
           state: { username }
         });
-      }
-    })
-    .catch((error) => {
-      console.error('Error during login: ', error);
-      // Optionally, you can reset the form fields
-      // setUsername('');
-      // setPassword('');
-    });
+      })
+      .catch((error) => {
+        console.error('Error during login: ', error);
+        // Optionally, you can reset the form fields
+        // setUsername('');
+        // setPassword('');
+      });
   };
 
   return (
@@ -66,7 +59,7 @@ export default function Login() {
       <Link style={styles.link} to='/'>Back to Home</Link>
       <div style={styles.noAccount}>
         <h2>Don't have an account?</h2>
-        <Link style={styles.link} to="/new-user">Register here</Link>
+        <Link style={styles.link} to="/auth/new-user">Create New User</Link>
       </div>
     </div>
   );
