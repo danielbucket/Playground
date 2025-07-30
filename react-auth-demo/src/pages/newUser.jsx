@@ -2,28 +2,41 @@ import { Link, useNavigate } from 'react-router';
 import { useState } from 'react';
 
 export default function NewUser() {
-  const [formState, setFormState] = useState();
+  const [password, setPassword] = useState('password');
+  const [username, setUsername] = useState('admin');
+
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    setFormState(() => event.target)
-    navigate('/login', {
-      replace: true,
-      state: {
-        username: event.target[0].value,
-        password: event.target[1].value
+
+    if (!username || !password) {
+      console.error('All fields are required');
+      return;
+    }
+
+    postNewUser(password, username)
+    .then((result) => {
+      if (result) {
+        console.log('New user created successfully');
+        navigate('/login', { replace: true, state: { username, password } });
+      } else {
+        console.error('Failed to create new user');
       }
-    });
+    })
+    .catch((error) => {
+      console.error('Error creating new user:', error);
+    })
   };
 
   return (
     <div style={styles.container}>
       <h1>Create New User</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Username" value="admin"/>
-        <input type="password" placeholder="Password" value="password"/>
+      <form style={styles.form} onSubmit={handleSubmit}>
+        <label>Username:</label>
+        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <label>Password:</label>
+        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <button type="submit">Create Account</button>
       </form>
       <Link style={styles.link} to='/login'>Already have an account?</Link>
@@ -31,10 +44,35 @@ export default function NewUser() {
   );
 };
 
+async function postNewUser(password, username) {
+  const response = await fetch('http://localhost:3000/react-auth-demo/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  });
+
+  if (!response.status === 201) {
+    console.error('Failed to create user');
+    return null;
+  };
+  
+  const data = await response.json();
+
+  if (!data) {
+    console.error('Error creating user');
+    return null;
+  };
+
+  return data;
+};
+
+
 const styles = {
   container: {
     display: 'flex',
-    height: '200px',
+    height: '350px',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
@@ -46,4 +84,10 @@ const styles = {
     color: '#007bff',
     fontSize: '1.2rem',
   },
+
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  }
 };

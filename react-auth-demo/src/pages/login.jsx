@@ -39,7 +39,10 @@ export default function Login() {
       if (data.token) {
         setToken(data.token);
         localStorage.setItem('test-token', data.token);
-        navigate('/home', { replace: true });
+        navigate('/home', {
+          replace: true,
+          state: { username }
+        });
       }
     })
     .catch((error) => {
@@ -53,7 +56,7 @@ export default function Login() {
   return (
     <div style={styles.container}>
       <h1>Login Page</h1>
-      <form>
+      <form style={styles.form}>
         <label>Username:</label>
           <input type="text" placeholder="Username" value={username ? username : ''} onChange={(e) => setUsername(e.target.value)} />
         <label>Password:</label>
@@ -72,17 +75,26 @@ export default function Login() {
 const styles = {
   container: {
     display: 'flex',
-    height: '250px',
+    height: '350px',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     border: '1px solid #ccc',
   },
+
   link: {
     marginTop: '1rem',
     textDecoration: 'none',
     color: '#007bff',
     fontSize: '1.2rem',
+  },
+
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '1rem',
   },
 
   noAccount: {

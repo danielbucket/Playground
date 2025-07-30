@@ -1,9 +1,14 @@
 import { Link } from 'react-router';
+import { useLocation } from 'react-router';
 
 export default function UserHome() {
+  const location = useLocation();
+  const { username } = location.state || { username: 'Guest' };
+
   return (
     <div style={styles.container}>
       <h1>User Home Page</h1>
+      <p>Welcome, {username}!</p>
       <div style={styles.linkList}>
         <Link style={styles.link} to="/home/profile">Go to Profile</Link>
         <Link style={styles.link} to="/home/logout">Log Out</Link>
